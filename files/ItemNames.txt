@@ -1,0 +1,523 @@
+Walk to
+Look at
+Take
+Use
+Talk to
+Swallow
+Give
+Push
+Options
+Test
+Demo
+Help
+Quit Game
+Continue Playing
+Fast
+Mid
+Slow
+Click
+On
+Off
+Load
+Save
+Game Options
+Reading Speed
+Music
+Sound
+Voices
+Text
+Audio
+Both
+Cancel
+Quit
+OK
+Off
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+Max
+Music Disabled
+Music Enabled
+Voices Disabled
+Voices Enabled
+Sound Effects Disabled
+Sound Effects Enabled
+Audio Disabled
+Audio Enabled
+Paused - Press any key to continue
+the Psych Profile
+the knife
+the fork
+the bread
+the bottle
+the cookbook
+the sheet
+the sheet
+the rope
+the gun
+the bloody key
+the milky fluid
+Edna's body
+Gorrister's heart
+the whiskey
+Edna's heart
+Harry's heart
+the magnifier
+Edna's key
+the beef's heart
+Glynis' body
+the shovel
+the note
+the altimeter
+the switch
+the power light
+the lever
+the power light
+the switch
+the stitching
+the stall door
+the hatch
+the bowl of punch
+Harry's body
+the log book
+the harness
+Gorrister
+AM
+Glynis
+Harry
+the jackal
+Edna
+the rats
+the jukebox
+the door
+the mirror
+the port hole
+the bunk
+the door
+the chair
+the debris
+the tablecloth
+the vomit stain
+the door
+the oven
+the rats
+the fork
+the knife
+the bottle
+the hatch
+the door
+the stairs
+the corridor
+the door
+the node
+the corridor
+the door
+the mirror
+the port hole
+the bunk
+the book
+the door
+the mirror
+the port hole
+the bunk
+the door
+the mirror
+the port hole
+the bunk
+the pillow
+the door
+the cages
+the engine
+the bloody key
+the door
+the switch
+the door
+the harness
+the engine
+the stairs
+the tear
+the altimeter
+the air bag
+the front door
+the ladder
+the tire
+the front door
+the back door
+the restroom
+the door
+the stall
+the graffitti
+the mirror
+the sink
+the urinal
+the window
+the door
+the beef
+the key
+the back door
+the trashcan
+the ground
+the grave
+the shovel
+the desert
+the doorway
+the Psych Profile
+the fruit
+the bag
+the wood
+the doll
+the junk
+the wire
+the vines
+Benny
+AM
+the elder
+the mother
+the mother
+the child
+the child
+the child
+the baby
+the sentry
+the sentry
+Murphy's grave
+Tuttle's grave
+Thomas' grave
+Brickman's grave
+the elder
+the video screen
+the villager
+Benny
+Flower
+the bottom of the steps
+the top of the steps
+the caves
+the light
+the path
+the steps
+the caves
+the trees
+the cave
+the path
+the ladder
+the basket
+the twine
+the cave mouth
+the video screen
+the cave mouth
+the fire
+the video screen
+the vines
+the cradle
+the cave mouth
+the food baskets
+the pictographs
+the cave mouth
+the bed
+the hole
+the pot of food
+the video screen
+the path
+the fruit
+the tree
+the path
+the altar
+the debris
+the path
+the fence
+the doorway
+the Psych Profile
+the compact disc
+the cup
+the cup of water
+the yellow fabric
+the forceps
+the ROM chip
+the gem
+the shroud
+the speaker
+the secret passage
+the front door
+the sarcophagus
+the sarcophagus
+the elevator
+the cabinet
+the monitor
+the monitor
+the monitor
+the monitor
+the monitor
+Ellen
+AM
+the sphinx
+the statue
+the pile of clothes
+the left workstation
+the center workstation
+the right workstation
+the translator
+the exit passage
+the component
+the logo
+the wiring
+the wiring
+the opening
+the passageway
+the hieroglyphics
+the water
+the electronic bricks
+the front door
+the opening
+the secret passage
+the passage
+the keypad
+the sarcophagus
+the hieroglyphics
+the passage
+the passage
+the passage
+the artifact
+the yellow artifact
+the hieroglyphics
+the archway
+the burial chamber
+the corridor
+the decoration
+the armatron
+the urn
+the forceps
+the passageway
+the left workstation
+the center workstation
+the right workstation
+the door
+the pyramid
+the exit
+the opening
+the controls
+the doorway
+the Psych Profile
+the box
+the ether
+the jar
+the pliers
+the scalpel
+the watch
+the mirror
+the jar in the box
+the open vent
+the vent
+the oven
+the oven
+Nimdok
+AM
+the Anesthetist
+the child
+the patient
+the Doctor
+the prisoner
+the guard
+the victim
+the rat
+the golem
+the golem
+the golem
+the Doctor
+the Doctor
+the guard
+the child
+the bunker
+the mass grave
+the wall
+the door
+the curtain
+the poster
+the curtain
+recovery
+the gallery
+the scalpel
+the doorway
+the doorway
+the bell jar
+the teletype
+the door
+the blue prints
+the switch
+the vat
+the hospital
+the crossroads
+the gate
+the door
+the exit
+the door
+the heating vent
+the patient
+the door
+the passage
+the records
+the controls
+the ovens
+the pliers
+the watch
+the doorway
+the Psych Profile
+the chalk
+the glass
+the icon
+the mirror
+the mirror
+the armor
+the door
+the door
+the circle
+the arrow
+Ted
+AM
+Surgat
+the angel
+the devil
+the maid
+Ellen
+the witch
+the imp
+the wolf
+the wolf
+the wolf
+the wolf
+the witch's shadow
+the maid
+the entrance
+the drawbridge
+the gargoyle
+the doorway
+the pulpit
+the sconce
+the sconce
+the secret passage
+the doorway
+the tapestry
+the tapestry
+the doorway
+the dresser
+the door
+the bed
+the chest
+the mirror
+the tapestry
+the door
+the bed
+the books
+the stairs
+the circle
+the door
+the oven
+the door
+the door
+the bed
+the books
+the doorway
+the arrow
+the entrance
+the giant octagonal box
+the path
+the portal
+the monitor
+the Psych Profile
+Access
+Clarity
+Compassion
+Entropy
+Gallantry
+Forgiveness
+Love
+Life
+Summoning
+Valor
+the gem
+the remote control
+the door
+the pillar
+the pillar
+the pillar
+the pillar
+the pillar
+the skull
+the skull
+the skull
+the skull
+the skull
+the hand
+Gorrister
+AM
+Benny
+Ellen
+Nimdok
+Ted
+the Superego
+the Ego
+the Id
+Glynis
+Manya
+Surgat
+the Chinese entity
+the Russian entity
+the workstation
+the gargoyle
+the workstation
+the hand
+the skull
+the skull
+the skull
+the skull
+the skull
+the Superego
+the Ego
+the Id
+the neural path
+the pit workstation
+the pit
+the bridge
+the neural path
+the hole
+the pillar
+the neural path
+the neural path
+the pillar
+the neural path
+the gargoyle
+the pillar
+the neural path
+the neural path
+the workstation
+the tube
+the pillar
+the neural path
+the holographic projector
+the pillar
+the neural path
+the neural path
+the circle
+the bridge
+the doorway
+the Psych Profile
+the player
+AM
+Chinese Entity
+Russian Entity
+the doorway
+Benny
+Gorrister
+Nimdok
+Ted
+Ellen
+the doorway
+the tear
+the mooring ring
+the honky-tonk
+Gorrister's heart
