@@ -52,7 +52,7 @@ type
 
 var
   Form1: TForm1;
-  // терминология взята из http://wiki.scummvm.org/index.php/SAGA/Datafiles/Bitmap_Font
+  // С‚РµСЂРјРёРЅРѕР»РѕРіРёСЏ РІР·СЏС‚Р° РёР· http://wiki.scummvm.org/index.php/SAGA/Datafiles/Bitmap_Font
   c_height: Integer; // Maximum character height
   c_width: Integer; // Maximum character width
   row_length: Integer; // Font data row length (in bytes)
@@ -65,15 +65,15 @@ var
 
   SymbolArray: array[0..100, 0..10000] of byte;
 
-  FontStart: LongInt; // смещение начало структуры шрифта
+  FontStart: LongInt; // СЃРјРµС‰РµРЅРёРµ РЅР°С‡Р°Р»Рѕ СЃС‚СЂСѓРєС‚СѓСЂС‹ С€СЂРёС„С‚Р°
 
-  OverHead: Integer; // перерасход байт
+  OverHead: Integer; // РїРµСЂРµСЂР°СЃС…РѕРґ Р±Р°Р№С‚
 
-  GlobalFontBitmap: array[0..100, 0..10000] of integer; // прямоугольник всех шрифтов
+  GlobalFontBitmap: array[0..100, 0..10000] of integer; // РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє РІСЃРµС… С€СЂРёС„С‚РѕРІ
 
-  BufFileSize: LongInt; // размер scream.res
+  BufFileSize: LongInt; // СЂР°Р·РјРµСЂ scream.res
 
-  // таблицы смещений блоков и их размеры из scream.res
+  // С‚Р°Р±Р»РёС†С‹ СЃРјРµС‰РµРЅРёР№ Р±Р»РѕРєРѕРІ Рё РёС… СЂР°Р·РјРµСЂС‹ РёР· scream.res
   GlobalOffset: array[0..1272] of LongWord;
   GlobalSizes: array[0..1272] of LongWord;
   //bufRus : PByteArray;
@@ -86,14 +86,14 @@ where y is the row value; each character has c_height rows.
  Each character is ((width - 1) / 8) + 1 bytes wide. A set bit corresponds to a set pixel.
 }
 
-//  const FONT_START=$6082;//24706; { было 24572}
+//  const FONT_START=$6082;//24706; { Р±С‹Р»Рѕ 24572}
 //  const FONT_HEIGHT=17;
 //  const WIDTH_START=$5D1D;//23837;
 
-const R1Start = $5AF6; // Начало структуры шрифта диалогов
-  //const R3Start=$4106; // начала структуры маленького шрифта
+const R1Start = $5AF6; // РќР°С‡Р°Р»Рѕ СЃС‚СЂСѓРєС‚СѓСЂС‹ С€СЂРёС„С‚Р° РґРёР°Р»РѕРіРѕРІ
+  //const R3Start=$4106; // РЅР°С‡Р°Р»Р° СЃС‚СЂСѓРєС‚СѓСЂС‹ РјР°Р»РµРЅСЊРєРѕРіРѕ С€СЂРёС„С‚Р°
 const R3Start = $DE6;
-const FontHeaderSize = 1286; // размер заголовка всех шрифтов
+const FontHeaderSize = 1286; // СЂР°Р·РјРµСЂ Р·Р°РіРѕР»РѕРІРєР° РІСЃРµС… С€СЂРёС„С‚РѕРІ
 
 implementation
 
@@ -102,16 +102,16 @@ begin
   Result := buf[offset + 0] + 256 * buf[offset + 1] + 256 * 256 * buf[offset + 2] + 256 * 256 * 256 * buf[offset + 3];
 end;
 
-// пишем 4 байта, DWORD в байт-буфер, формат памяти LE
-// offset - куда пишем, отсчет от нуля
-// number - число, которое пишем
-// buf - байт буфер
+// РїРёС€РµРј 4 Р±Р°Р№С‚Р°, DWORD РІ Р±Р°Р№С‚-Р±СѓС„РµСЂ, С„РѕСЂРјР°С‚ РїР°РјСЏС‚Рё LE
+// offset - РєСѓРґР° РїРёС€РµРј, РѕС‚СЃС‡РµС‚ РѕС‚ РЅСѓР»СЏ
+// number - С‡РёСЃР»Рѕ, РєРѕС‚РѕСЂРѕРµ РїРёС€РµРј
+// buf - Р±Р°Р№С‚ Р±СѓС„РµСЂ
 
 procedure WriteDWORD(offset: LongWord; number: LongWord; var buf: PByteArray);
 var
   byte0, byte1, byte2, byte3: Byte;
 begin
- //Пишем смещение блока
+ //РџРёС€РµРј СЃРјРµС‰РµРЅРёРµ Р±Р»РѕРєР°
   BYTE3 := Trunc(number / (256 * 256 * 256));
   BYTE2 := Trunc((number - BYTE3 * 256 * 256 * 256) / (256 * 256));
   BYTE1 := Trunc((number - BYTE2 * 256 * 256 - BYTE3 * 256 * 256 * 256) / (256));
@@ -128,7 +128,7 @@ var
   k, i, j, col, cbyte, DataStart: longint;
 begin
   DataStart := FontStart + FontHeaderSize;
-   // Текущий байт раскладываем в биты, где каждый бит - это пиксель квадрата всего шрифта
+   // РўРµРєСѓС‰РёР№ Р±Р°Р№С‚ СЂР°СЃРєР»Р°РґС‹РІР°РµРј РІ Р±РёС‚С‹, РіРґРµ РєР°Р¶РґС‹Р№ Р±РёС‚ - СЌС‚Рѕ РїРёРєСЃРµР»СЊ РєРІР°РґСЂР°С‚Р° РІСЃРµРіРѕ С€СЂРёС„С‚Р°
   for i := 0 to (c_height - 1) do
     for j := 0 to (row_length - 1) do
     begin
@@ -179,7 +179,7 @@ begin
     end;
 end;
 
-procedure ShowSymbol(symnum: Integer); // рисует символ
+procedure ShowSymbol(symnum: Integer); // СЂРёСЃСѓРµС‚ СЃРёРјРІРѕР»
 var
   i, j, d, fontnum: Integer;
 begin
@@ -201,27 +201,27 @@ begin
 end;
 
 
-// Глава 1, заполняем данные
+// Р“Р»Р°РІР° 1, Р·Р°РїРѕР»РЅСЏРµРј РґР°РЅРЅС‹Рµ
 procedure InitFont(fontnum: Integer);
 var
   f: file of Byte;
   i, j, k, k2, off1: LongInt;
-  cbyte: integer; // текущий байт в масиве данных шрифта
-  DataStart: LongInt; // FontStart + длина заголовка 1286 байт = DataStart
+  cbyte: integer; // С‚РµРєСѓС‰РёР№ Р±Р°Р№С‚ РІ РјР°СЃРёРІРµ РґР°РЅРЅС‹С… С€СЂРёС„С‚Р°
+  DataStart: LongInt; // FontStart + РґР»РёРЅР° Р·Р°РіРѕР»РѕРІРєР° 1286 Р±Р°Р№С‚ = DataStart
   col: LongInt;
 begin
-  FileMode := fmShareDenyNone; // права доступа отключить ругань
+  FileMode := fmShareDenyNone; // РїСЂР°РІР° РґРѕСЃС‚СѓРїР° РѕС‚РєР»СЋС‡РёС‚СЊ СЂСѓРіР°РЅСЊ
   AssignFile(f, 'scream.res');
   Reset(f);
 
   BufFileSize := FileSize(f);
-  GetMem(Buf, BufFileSize); // выделяем память буфферу
-  Blockread(f, Buf[0], BufFileSize); // читаем весь файл туда
+  GetMem(Buf, BufFileSize); // РІС‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ Р±СѓС„С„РµСЂСѓ
+  Blockread(f, Buf[0], BufFileSize); // С‡РёС‚Р°РµРј РІРµСЃСЊ С„Р°Р№Р» С‚СѓРґР°
 
- // заполняем таблицу смещений и размеров блоков
+ // Р·Р°РїРѕР»РЅСЏРµРј С‚Р°Р±Р»РёС†Сѓ СЃРјРµС‰РµРЅРёР№ Рё СЂР°Р·РјРµСЂРѕРІ Р±Р»РѕРєРѕРІ
  //GlobalOffset : array [0..1272] of LongWord;
  //GlobalSizes  : array [0..1272] of LongWord;
- // берем указатель на таблицу
+ // Р±РµСЂРµРј СѓРєР°Р·Р°С‚РµР»СЊ РЅР° С‚Р°Р±Р»РёС†Сѓ
   off1 := buf[BufFileSize - 8] + 256 * buf[BufFileSize - 7] + 256 * 256 * buf[BufFileSize - 6] + 256 * 256 * 256 * buf[BufFileSize - 5];
   for i := 0 to 1272 do
   begin
@@ -233,19 +233,19 @@ begin
   if fontnum = 1 then FontStart := R3Start;
   if fontnum = 2 then FontStart := R1Start;
 
- // читаем высоту шрифта
+ // С‡РёС‚Р°РµРј РІС‹СЃРѕС‚Сѓ С€СЂРёС„С‚Р°
   c_height := buf[FontStart + 0] + 256 * buf[FontStart + 1];
- // Выводим тут же
+ // Р’С‹РІРѕРґРёРј С‚СѓС‚ Р¶Рµ
   Form1._c_height.Value := c_height;
 
- // читаем ширину шрифта
+ // С‡РёС‚Р°РµРј С€РёСЂРёРЅСѓ С€СЂРёС„С‚Р°
   c_width := buf[FontStart + 2] + 256 * buf[FontStart + 3];
 
- // читаем длину ряда
+ // С‡РёС‚Р°РµРј РґР»РёРЅСѓ СЂСЏРґР°
   row_length := buf[FontStart + 4] + 256 * buf[FontStart + 5];
   form1._row_length.Value := row_length;
 
- // читаем FontIndex
+ // С‡РёС‚Р°РµРј FontIndex
   for i := 0 to 255 do
   begin
     FontIndex[i] := buf[FontStart + 6 + i * 2] + 256 * buf[FontStart + 6 + i * 2 + 1];
@@ -254,16 +254,16 @@ begin
     FontTracking[i] := buf[FontStart + 6 + 512 + 256 + 256 + i];
   end;
 
-  // Создаем GlobalFontMap
-  // чистим
+  // РЎРѕР·РґР°РµРј GlobalFontMap
+  // С‡РёСЃС‚РёРј
   for i := 0 to 99 do
     for j := 0 to 9999 do
       GlobalFontBitmap[i, j] := 0;
   //
 
-  // Создаем картинку текущего шрифта
-  // Читаем (row_length * c_height) байт данных с адреса 45FCh в scream.res
-  // Длина заголовка шрифта 1286 байт, поэтому 1286+FontStart = DataStart
+  // РЎРѕР·РґР°РµРј РєР°СЂС‚РёРЅРєСѓ С‚РµРєСѓС‰РµРіРѕ С€СЂРёС„С‚Р°
+  // Р§РёС‚Р°РµРј (row_length * c_height) Р±Р°Р№С‚ РґР°РЅРЅС‹С… СЃ Р°РґСЂРµСЃР° 45FCh РІ scream.res
+  // Р”Р»РёРЅР° Р·Р°РіРѕР»РѕРІРєР° С€СЂРёС„С‚Р° 1286 Р±Р°Р№С‚, РїРѕСЌС‚РѕРјСѓ 1286+FontStart = DataStart
  // for i:=0 to (row_length * c_height) do
    //begin
   DataStart := FontStart + FontHeaderSize;
@@ -272,7 +272,7 @@ begin
 
   ShowABC;
 
- // прорисовка полоски с трекингом
+ // РїСЂРѕСЂРёСЃРѕРІРєР° РїРѕР»РѕСЃРєРё СЃ С‚СЂРµРєРёРЅРіРѕРј
   for k := 0 to 255 do
     for j := 0 to (FontTracking[k] - 1) do
       form1.imgFontImage.Canvas.Pixels[FontIndex[k] * 8 + j, c_height + 1] := 55 * 155 * 155;
@@ -282,11 +282,11 @@ end;
 
 {$R *.dfm}
 
-// Глава0, инициализируем массив из описания SAGA fonts на scummvm
+// Р“Р»Р°РІР°0, РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РјР°СЃСЃРёРІ РёР· РѕРїРёСЃР°РЅРёСЏ SAGA fonts РЅР° scummvm
 
 procedure TForm1.FormActivate(Sender: TObject);
 begin
-  OverHead := 0; // пока что перерасхода нет
+  OverHead := 0; // РїРѕРєР° С‡С‚Рѕ РїРµСЂРµСЂР°СЃС…РѕРґР° РЅРµС‚
   _FontChooseChange(Sender);
 end;
 
@@ -294,7 +294,7 @@ procedure TForm1._FontNumChange(Sender: TObject);
 var
   i, j, fontnum: Integer;
 begin
-  //ScrollBar1.Position от 0 до 255, код символа
+  //ScrollBar1.Position РѕС‚ 0 РґРѕ 255, РєРѕРґ СЃРёРјРІРѕР»Р°
   fontnum := Form1._FontNum.Position;
 
   ShowSymbol(fontnum);
@@ -303,7 +303,7 @@ begin
 //ReadSYMBOL(form1.ScrollBar1.Position);
 
   Form1.TMemoLOG.Lines.Clear;
-  Form1.TMemoLOG.Lines.Add('Код символа = ' + inttostr(fontnum));
+  Form1.TMemoLOG.Lines.Add('РљРѕРґ СЃРёРјРІРѕР»Р° = ' + inttostr(fontnum));
   Form1.TMemoLOG.Lines.Add('c_height = ' + inttostr(c_height));
   Form1.TMemoLOG.Lines.Add('c_width = ' + inttostr(c_width));
   Form1.TMemoLOG.Lines.Add('row_length = ' + inttostr(row_length));
@@ -313,7 +313,7 @@ begin
   Form1.TMemoLOG.Lines.Add('FontFlag[' + inttostr(fontnum) + '] = ' + inttostr(FontFlag[fontnum]));
   Form1.TMemoLOG.Lines.Add('FontTracking[' + inttostr(fontnum) + '] = ' + inttostr(FontTracking[fontnum]));
 
-  Form1.TMemoLOG.Lines.Add('Символ = ' + chr(fontnum));
+  Form1.TMemoLOG.Lines.Add('РЎРёРјРІРѕР» = ' + chr(fontnum));
 
 
   _FontWidth.Value := FontWidth[fontnum];
@@ -354,40 +354,40 @@ begin
       buf[datastart + i * row_length + j] := 0; //
     end;
 
-  fontnum := _fontnum.Position; // текущий код символа
+  fontnum := _fontnum.Position; // С‚РµРєСѓС‰РёР№ РєРѕРґ СЃРёРјРІРѕР»Р°
 
- // записуем
+ // Р·Р°РїРёСЃСѓРµРј
   AssignFile(f, '.\fontout\scream.res');
   Rewrite(f);
 
-  // Сохраняем параметры
+  // РЎРѕС…СЂР°РЅСЏРµРј РїР°СЂР°РјРµС‚СЂС‹
   FontWidth[fontnum] := _FontWidth.Value;
   FontFlag[fontnum] := _FontFlag.Value;
   FontTracking[fontnum] := _FontTracking.Value;
   FontIndex[fontnum] := _FontIndex.Value;
 
-  // Записываем назад row_length
-  d := _row_length.Value - row_length; // дельта сдвига
+  // Р—Р°РїРёСЃС‹РІР°РµРј РЅР°Р·Р°Рґ row_length
+  d := _row_length.Value - row_length; // РґРµР»СЊС‚Р° СЃРґРІРёРіР°
   row_length := _row_length.Value;
-  HIBYTE := trunc(row_length / 256); // Старший байт из WORD
-  LOBYTE := row_length - 256 * HIBYTE; // Младший байт WORD, row_length уже с новой длиной
-  buf[FontStart + 4] := LOBYTE; // младщий байт
-  buf[FontStart + 5] := HIBYTE; // старший байт
+  HIBYTE := trunc(row_length / 256); // РЎС‚Р°СЂС€РёР№ Р±Р°Р№С‚ РёР· WORD
+  LOBYTE := row_length - 256 * HIBYTE; // РњР»Р°РґС€РёР№ Р±Р°Р№С‚ WORD, row_length СѓР¶Рµ СЃ РЅРѕРІРѕР№ РґР»РёРЅРѕР№
+  buf[FontStart + 4] := LOBYTE; // РјР»Р°РґС‰РёР№ Р±Р°Р№С‚
+  buf[FontStart + 5] := HIBYTE; // СЃС‚Р°СЂС€РёР№ Р±Р°Р№С‚
 
-  // Записываем назад c_heigth
+  // Р—Р°РїРёСЃС‹РІР°РµРј РЅР°Р·Р°Рґ c_heigth
   c_height := Form1._c_height.Value;
-  HIBYTE := trunc(c_height / 256); // Старший байт из WORD
-  LOBYTE := c_height - 256 * HIBYTE; // Младший байт WORD, c_height уже с новой длиной
+  HIBYTE := trunc(c_height / 256); // РЎС‚Р°СЂС€РёР№ Р±Р°Р№С‚ РёР· WORD
+  LOBYTE := c_height - 256 * HIBYTE; // РњР»Р°РґС€РёР№ Р±Р°Р№С‚ WORD, c_height СѓР¶Рµ СЃ РЅРѕРІРѕР№ РґР»РёРЅРѕР№
   buf[FontStart + 0] := LOBYTE;
   buf[FontStart + 1] := HIBYTE;
 
- // Сбрасываем массивы в буфер перед отправкой в файл
+ // РЎР±СЂР°СЃС‹РІР°РµРј РјР°СЃСЃРёРІС‹ РІ Р±СѓС„РµСЂ РїРµСЂРµРґ РѕС‚РїСЂР°РІРєРѕР№ РІ С„Р°Р№Р»
   for i := 32 to 255 do
   begin
     HIBYTE := trunc(FontIndex[i] / 256);
     LOBYTE := FontIndex[i] - 256 * HIBYTE;
-    // Записываем назад индексы
-    buf[FontStart + 6 + i * 2 + 1] := HIBYTE; // старший байт
+    // Р—Р°РїРёСЃС‹РІР°РµРј РЅР°Р·Р°Рґ РёРЅРґРµРєСЃС‹
+    buf[FontStart + 6 + i * 2 + 1] := HIBYTE; // СЃС‚Р°СЂС€РёР№ Р±Р°Р№С‚
     buf[FontStart + 6 + i * 2] := LOBYTE;
 
     buf[FontStart + 6 + 512 + i] := FontWidth[i];
@@ -399,32 +399,32 @@ begin
     for j := 0 to (row_length - 1) do
       buf[datastart + i * (row_length) + j] := SymbolArray[i, j];
 
-// патчим перед записью шрифт
-// вместо смещения шрифта №5 пишем указатель на шрифт №2, там находится шрифт
-// в блок записать смещение  0de6 и размер 7526 байт
-// смещение на таблицу смещений и размеров
+// РїР°С‚С‡РёРј РїРµСЂРµРґ Р·Р°РїРёСЃСЊСЋ С€СЂРёС„С‚
+// РІРјРµСЃС‚Рѕ СЃРјРµС‰РµРЅРёСЏ С€СЂРёС„С‚Р° в„–5 РїРёС€РµРј СѓРєР°Р·Р°С‚РµР»СЊ РЅР° С€СЂРёС„С‚ в„–2, С‚Р°Рј РЅР°С…РѕРґРёС‚СЃСЏ С€СЂРёС„С‚
+// РІ Р±Р»РѕРє Р·Р°РїРёСЃР°С‚СЊ СЃРјРµС‰РµРЅРёРµ  0de6 Рё СЂР°Р·РјРµСЂ 7526 Р±Р°Р№С‚
+// СЃРјРµС‰РµРЅРёРµ РЅР° С‚Р°Р±Р»РёС†Сѓ СЃРјРµС‰РµРЅРёР№ Рё СЂР°Р·РјРµСЂРѕРІ
   off1 := buf[BufFileSize - 8] + 256 * buf[BufFileSize - 7] + 256 * 256 * buf[BufFileSize - 6] + 256 * 256 * 256 * buf[BufFileSize - 5];
 
   DW1 := $0DE6;
- //Пишем смещение блока
+ //РџРёС€РµРј СЃРјРµС‰РµРЅРёРµ Р±Р»РѕРєР°
 
   BYTE3 := Trunc(DW1 / (256 * 256 * 256));
   BYTE2 := Trunc((DW1 - BYTE3 * 256 * 256 * 256) / (256 * 256));
   BYTE1 := Trunc((DW1 - BYTE2 * 256 * 256 - BYTE3 * 256 * 256 * 256) / (256));
   BYTE0 := DW1 - BYTE1 * 256 - BYTE2 * 256 * 256 - BYTE3 * 256 * 256 * 256;
- // 6*8 - это 6 блок, состоящий из 2х DWORD, смещение и размер
+ // 6*8 - СЌС‚Рѕ 6 Р±Р»РѕРє, СЃРѕСЃС‚РѕСЏС‰РёР№ РёР· 2С… DWORD, СЃРјРµС‰РµРЅРёРµ Рё СЂР°Р·РјРµСЂ
   buf[off1 + 6 * 8 + 0] := byte0;
   buf[off1 + 6 * 8 + 1] := byte1;
   buf[off1 + 6 * 8 + 2] := byte2;
   buf[off1 + 6 * 8 + 3] := byte3;
 
-  DW1 := $1D66; // размер 7526
- // Пишем размер блока
+  DW1 := $1D66; // СЂР°Р·РјРµСЂ 7526
+ // РџРёС€РµРј СЂР°Р·РјРµСЂ Р±Р»РѕРєР°
   BYTE3 := Trunc(DW1 / (256 * 256 * 256));
   BYTE2 := Trunc((DW1 - BYTE3 * 256 * 256 * 256) / (256 * 256));
   BYTE1 := Trunc((DW1 - BYTE2 * 256 * 256 - BYTE3 * 256 * 256 * 256) / (256));
   BYTE0 := DW1 - BYTE1 * 256 - BYTE2 * 256 * 256 - BYTE3 * 256 * 256 * 256;
- // 6*8 - это 6 блок, состоящий из 2х DWORD, смещение и размер
+ // 6*8 - СЌС‚Рѕ 6 Р±Р»РѕРє, СЃРѕСЃС‚РѕСЏС‰РёР№ РёР· 2С… DWORD, СЃРјРµС‰РµРЅРёРµ Рё СЂР°Р·РјРµСЂ
   buf[off1 + 6 * 8 + 4] := byte0;
   buf[off1 + 6 * 8 + 5] := byte1;
   buf[off1 + 6 * 8 + 6] := byte2;
@@ -487,19 +487,19 @@ begin
 
   if (Button = mbLeft) then
   begin
-    color := 255 * 255; // карандаш
+    color := 255 * 255; // РєР°СЂР°РЅРґР°С€
   end;
 
   if (Button = mbRight) then
   begin
-    color := 0; // ластик
+    color := 0; // Р»Р°СЃС‚РёРє
   end;
 
-// рисуем точку
+// СЂРёСЃСѓРµРј С‚РѕС‡РєСѓ
   form1.img1.Canvas.Pixels[xpos, ypos] := color;
 
-// Пишем точку прямо в байт ряда
-// Если символ = 1 байт шириной
+// РџРёС€РµРј С‚РѕС‡РєСѓ РїСЂСЏРјРѕ РІ Р±Р°Р№С‚ СЂСЏРґР°
+// Р•СЃР»Рё СЃРёРјРІРѕР» = 1 Р±Р°Р№С‚ С€РёСЂРёРЅРѕР№
   if (d = 8) then
   begin
     byte1 := buf[datastart + ypos * row_length + FontIndex[fontnum]];
@@ -510,7 +510,7 @@ begin
     buf[datastart + ypos * row_length + FontIndex[fontnum]] := byte1;
   end;
 
-// если символ 2х байтный
+// РµСЃР»Рё СЃРёРјРІРѕР» 2С… Р±Р°Р№С‚РЅС‹Р№
   if (d = 16) then
   begin
     if (xpos <= 7) then byte1 := buf[datastart + ypos * row_length + FontIndex[fontnum]]
@@ -526,7 +526,7 @@ begin
     else buf[datastart + ypos * row_length + FontIndex[fontnum] + 1] := byte1;
   end;
 
- // если символ 3х байтный
+ // РµСЃР»Рё СЃРёРјРІРѕР» 3С… Р±Р°Р№С‚РЅС‹Р№
 {
 if (d=24) then
  begin
@@ -557,7 +557,7 @@ var
   GlobalFileSize, i, j, symIndx, k: longint;
   fin: file of Byte;
   bmpH, bmpW, bmpData, col1, col2, colCMP1, colCMP2, PixCol, lastPos, symoffsetinbmp, sym, cp1251pos: Integer;
-  // массив ширин шрифта из bmp
+  // РјР°СЃСЃРёРІ С€РёСЂРёРЅ С€СЂРёС„С‚Р° РёР· bmp
   bmpFont_width: array[0..65] of Integer;
   fname: string;
 
@@ -567,15 +567,15 @@ var
   Shift: TShiftState;
 
 const
-  bmpHoffset = $16; // смещение в BMP от нуля, высота BMP
-  bmpWoffset = $12; // смещение в BMP от нуля, ширина BMP
-  bmpDataOffset = $0A; // указатель начала raw данных в bmp
+  bmpHoffset = $16; // СЃРјРµС‰РµРЅРёРµ РІ BMP РѕС‚ РЅСѓР»СЏ, РІС‹СЃРѕС‚Р° BMP
+  bmpWoffset = $12; // СЃРјРµС‰РµРЅРёРµ РІ BMP РѕС‚ РЅСѓР»СЏ, С€РёСЂРёРЅР° BMP
+  bmpDataOffset = $0A; // СѓРєР°Р·Р°С‚РµР»СЊ РЅР°С‡Р°Р»Р° raw РґР°РЅРЅС‹С… РІ bmp
 begin
   if FontStart = R1Start then
   begin
     colCMP1 := 1;
     colCMP2 := 2;
-    h := 2; // ряд для сканирования
+    h := 2; // СЂСЏРґ РґР»СЏ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ
     fname := '.\finalfonts\R1-final18.bmp';
   end;
 
@@ -588,71 +588,71 @@ begin
     fname := '.\finalfonts\R3-final8.bmp';
   end;
 
-  FileMode := fmShareDenyNone; // права доступа отключить ругань
+  FileMode := fmShareDenyNone; // РїСЂР°РІР° РґРѕСЃС‚СѓРїР° РѕС‚РєР»СЋС‡РёС‚СЊ СЂСѓРіР°РЅСЊ
   AssignFile(fin, fname);
   Reset(fin);
   GlobalFileSize := FileSize(fin);
-  GetMem(bmpFont, GlobalFileSize); // выделяем память буфферу
-  Blockread(fin, bmpFont[0], GlobalFileSize); // читаем весь файл туда
+  GetMem(bmpFont, GlobalFileSize); // РІС‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ Р±СѓС„С„РµСЂСѓ
+  Blockread(fin, bmpFont[0], GlobalFileSize); // С‡РёС‚Р°РµРј РІРµСЃСЊ С„Р°Р№Р» С‚СѓРґР°
 
   bmpH := getDWORD(bmpHoffset, bmpFont);
   bmpW := getDWORD(bmpWoffset, bmpFont);
-  bmpData := getDWORD(bmpDataOffset, bmpFont); // =0436h = 1078 начало raw даных
+  bmpData := getDWORD(bmpDataOffset, bmpFont); // =0436h = 1078 РЅР°С‡Р°Р»Рѕ raw РґР°РЅС‹С…
 
   if (bmpH > c_height) then
   begin
-    Form1.TMemoLOG.Lines.Add('Несовпадение высот');
+    Form1.TMemoLOG.Lines.Add('РќРµСЃРѕРІРїР°РґРµРЅРёРµ РІС‹СЃРѕС‚');
    //Exit;
   end;
- // заполняем массив ширин из BMP файла
-  symIndx := 0; // индекс символа, в BMP идет А-Яа-я
+ // Р·Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ С€РёСЂРёРЅ РёР· BMP С„Р°Р№Р»Р°
+  symIndx := 0; // РёРЅРґРµРєСЃ СЃРёРјРІРѕР»Р°, РІ BMP РёРґРµС‚ Рђ-РЇР°-СЏ
   lastPos := 0;
 
- // ищем границы букв и заполняю таблицу ширин символов из BMP
+ // РёС‰РµРј РіСЂР°РЅРёС†С‹ Р±СѓРєРІ Рё Р·Р°РїРѕР»РЅСЏСЋ С‚Р°Р±Р»РёС†Сѓ С€РёСЂРёРЅ СЃРёРјРІРѕР»РѕРІ РёР· BMP
   for j := 0 to (bmpW - 2) do
   begin
-    col1 := bmpFont[bmpData + h * bmpW + j]; // первого ряда мне оказалось достаточно
+    col1 := bmpFont[bmpData + h * bmpW + j]; // РїРµСЂРІРѕРіРѕ СЂСЏРґР° РјРЅРµ РѕРєР°Р·Р°Р»РѕСЃСЊ РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ
     col2 := bmpFont[bmpData + h * bmpW + j + 1];
-    // белый фон = 255 , $FF
-    // зеленый фон = 250 , $FA
+    // Р±РµР»С‹Р№ С„РѕРЅ = 255 , $FF
+    // Р·РµР»РµРЅС‹Р№ С„РѕРЅ = 250 , $FA
     if (((col1 = colCMP1) and (col2 = colCMP2))
       or
       ((col1 = colCMP2) and (col2 = colCMP1))) then
     begin
-      bmpFont_width[symIndx] := j - lastPos + 1; // записываем ширину
-      lastPos := j + 1; // смещаем последний указатель
+      bmpFont_width[symIndx] := j - lastPos + 1; // Р·Р°РїРёСЃС‹РІР°РµРј С€РёСЂРёРЅСѓ
+      lastPos := j + 1; // СЃРјРµС‰Р°РµРј РїРѕСЃР»РµРґРЅРёР№ СѓРєР°Р·Р°С‚РµР»СЊ
       inc(symIndx);
     end;
   end;
- // заполняю ширину последней буквы я маленькой
+ // Р·Р°РїРѕР»РЅСЏСЋ С€РёСЂРёРЅСѓ РїРѕСЃР»РµРґРЅРµР№ Р±СѓРєРІС‹ СЏ РјР°Р»РµРЅСЊРєРѕР№
   bmpFont_width[65] := bmpW - lastPos;
 
- // сравниваем ширины текущего символа и из BMP
- // затем высчитываем смещение в raw bmp тек символа и заполняем массив новой буквой
- // диапазоны font_width[form1.fontnum.Position] 32-255 и bmpFont_width[65] 0-65
- //Form1.Memo1.Lines.Add(IntToStr(font_width[form1.fontnum.Position]));  // ширина, 7 для Ё
- //Form1.Memo1.Lines.Add(IntToStr(form1.fontnum.Position+1));            // позиция в вин, 167+1
+ // СЃСЂР°РІРЅРёРІР°РµРј С€РёСЂРёРЅС‹ С‚РµРєСѓС‰РµРіРѕ СЃРёРјРІРѕР»Р° Рё РёР· BMP
+ // Р·Р°С‚РµРј РІС‹СЃС‡РёС‚С‹РІР°РµРј СЃРјРµС‰РµРЅРёРµ РІ raw bmp С‚РµРє СЃРёРјРІРѕР»Р° Рё Р·Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ РЅРѕРІРѕР№ Р±СѓРєРІРѕР№
+ // РґРёР°РїР°Р·РѕРЅС‹ font_width[form1.fontnum.Position] 32-255 Рё bmpFont_width[65] 0-65
+ //Form1.Memo1.Lines.Add(IntToStr(font_width[form1.fontnum.Position]));  // С€РёСЂРёРЅР°, 7 РґР»СЏ РЃ
+ //Form1.Memo1.Lines.Add(IntToStr(form1.fontnum.Position+1));            // РїРѕР·РёС†РёСЏ РІ РІРёРЅ, 167+1
  //Form1.Memo1.Lines.Add(IntToStr(bmpFont_width[7-1]));
- // form1.fontnum.Position + 1 = 168 - это Ё, 7 буква в алфавите BMP
- // form1.fontnum.Position+1 = 184 - это ё, 33+7 в алфавите BMP
- // 192 - А (1 буква)
- // 223 - Я (33 буква)
- // 224 - а (33 + 1 буква)
- // 255 - я (33 + 33 буква)
+ // form1.fontnum.Position + 1 = 168 - СЌС‚Рѕ РЃ, 7 Р±СѓРєРІР° РІ Р°Р»С„Р°РІРёС‚Рµ BMP
+ // form1.fontnum.Position+1 = 184 - СЌС‚Рѕ С‘, 33+7 РІ Р°Р»С„Р°РІРёС‚Рµ BMP
+ // 192 - Рђ (1 Р±СѓРєРІР°)
+ // 223 - РЇ (33 Р±СѓРєРІР°)
+ // 224 - Р° (33 + 1 Р±СѓРєРІР°)
+ // 255 - СЏ (33 + 33 Р±СѓРєРІР°)
   sym := 0;
   cp1251pos := form1._fontnum.Position;
 
-  if (cp1251pos = 168) then sym := 7; // 7 буква Ё
-  if (cp1251pos = 184) then sym := 33 + 7; // 33 + 7 буква ё
+  if (cp1251pos = 168) then sym := 7; // 7 Р±СѓРєРІР° РЃ
+  if (cp1251pos = 184) then sym := 33 + 7; // 33 + 7 Р±СѓРєРІР° С‘
   if ((cp1251pos >= 192) and (cp1251pos <= 197)) then sym := cp1251pos - 191;
   if ((cp1251pos >= 198) and (cp1251pos <= 223)) then sym := cp1251pos + 1 - 191;
 
   if ((cp1251pos >= 224) and (cp1251pos <= 229)) then sym := cp1251pos - 190;
   if ((cp1251pos >= 230) and (cp1251pos <= 255)) then sym := cp1251pos + 1 - 190;
 
-  if sym = 0 then Exit; // не выбрана русская буква
+  if sym = 0 then Exit; // РЅРµ РІС‹Р±СЂР°РЅР° СЂСѓСЃСЃРєР°СЏ Р±СѓРєРІР°
 
-// проверка ширин и корректировка
+// РїСЂРѕРІРµСЂРєР° С€РёСЂРёРЅ Рё РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєР°
   while ((FontWidth[form1._fontnum.Position] <> bmpFont_width[sym - 1])) do
   begin
     Form1._FontWidth.Value := bmpFont_width[sym - 1];
@@ -661,27 +661,27 @@ begin
 
   if ((FontWidth[form1._fontnum.Position] = bmpFont_width[sym - 1])) then
   begin
-    Form1.TMemoLOG.Lines.Add('Ширина из CFT и BMP файла совпадают.');
+    Form1.TMemoLOG.Lines.Add('РЁРёСЂРёРЅР° РёР· CFT Рё BMP С„Р°Р№Р»Р° СЃРѕРІРїР°РґР°СЋС‚.');
 
-    symoffsetinbmp := 0; // ищем смещение начала изображения
-    for i := 0 to (sym - 2) do // -1 потому что с нуля, еще -1 потому что ДО буквы, а не после
-      inc(symoffsetinbmp, bmpfont_width[i]); // нашли смещение-начало буквы, сумма ширин букв идущих до
+    symoffsetinbmp := 0; // РёС‰РµРј СЃРјРµС‰РµРЅРёРµ РЅР°С‡Р°Р»Р° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
+    for i := 0 to (sym - 2) do // -1 РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЃ РЅСѓР»СЏ, РµС‰Рµ -1 РїРѕС‚РѕРјСѓ С‡С‚Рѕ Р”Рћ Р±СѓРєРІС‹, Р° РЅРµ РїРѕСЃР»Рµ
+      inc(symoffsetinbmp, bmpfont_width[i]); // РЅР°С€Р»Рё СЃРјРµС‰РµРЅРёРµ-РЅР°С‡Р°Р»Рѕ Р±СѓРєРІС‹, СЃСѓРјРјР° С€РёСЂРёРЅ Р±СѓРєРІ РёРґСѓС‰РёС… РґРѕ
   end;
 
-  // заполняем букву из бмп в font_array
-  for i := 0 to (c_height - 1) do // координата Y ноль сверху слева
+  // Р·Р°РїРѕР»РЅСЏРµРј Р±СѓРєРІСѓ РёР· Р±РјРї РІ font_array
+  for i := 0 to (c_height - 1) do // РєРѕРѕСЂРґРёРЅР°С‚Р° Y РЅРѕР»СЊ СЃРІРµСЂС…Сѓ СЃР»РµРІР°
   begin
     byte1 := 0;
     ind1 := 128;
     delta := 0;
 
-    for j := 0 to (bmpFont_width[sym - 1] - 1) do // координата X
-    begin //начало изображения + смещение до буквы + ряд Y + текущий X
+    for j := 0 to (bmpFont_width[sym - 1] - 1) do // РєРѕРѕСЂРґРёРЅР°С‚Р° X
+    begin //РЅР°С‡Р°Р»Рѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ + СЃРјРµС‰РµРЅРёРµ РґРѕ Р±СѓРєРІС‹ + СЂСЏРґ Y + С‚РµРєСѓС‰РёР№ X
       col1 := bmpFont[bmpData + symoffsetinbmp + i * bmpW + j];
-       // $66 - коричневый
+       // $66 - РєРѕСЂРёС‡РЅРµРІС‹Р№
       if (col1 = 0) then byte1 := byte1 + ind1;
 
-      ind1 := ind1 shr 1; // ind1=0 значит байт отсчитали
+      ind1 := ind1 shr 1; // ind1=0 Р·РЅР°С‡РёС‚ Р±Р°Р№С‚ РѕС‚СЃС‡РёС‚Р°Р»Рё
       if (ind1 = 0) then
       begin
         buf[FontStart + FontHeaderSize + i * (row_length) + FontIndex[_FontNum.Position] + delta] := byte1;
@@ -694,14 +694,14 @@ begin
     if ind1 <> 128 then
       buf[FontStart + FontHeaderSize + i * row_length + FontIndex[_FontNum.Position] + delta] := byte1;
   end;
-   // сохраняем
+   // СЃРѕС…СЂР°РЅСЏРµРј
   btn_SaveBTNClick(sender);
-   // обновляем картинку
+   // РѕР±РЅРѕРІР»СЏРµРј РєР°СЂС‚РёРЅРєСѓ
   ShowSymbol(_FontNum.Position);
   ScrollBar2Change(sender);
 
   CloseFile(fin);
-  FreeMem(bmpFont); // освободить, закрыть и уйти.
+  FreeMem(bmpFont); // РѕСЃРІРѕР±РѕРґРёС‚СЊ, Р·Р°РєСЂС‹С‚СЊ Рё СѓР№С‚Рё.
 end;
 
 procedure TForm1._ClrSymClick(Sender: TObject);
@@ -723,21 +723,21 @@ var
   tmpStr1: string;
 
   byte0, byte1, byte2, byte3: Byte;
-// Нужно построить массив слов и таблицу смещений
+// РќСѓР¶РЅРѕ РїРѕСЃС‚СЂРѕРёС‚СЊ РјР°СЃСЃРёРІ СЃР»РѕРІ Рё С‚Р°Р±Р»РёС†Сѓ СЃРјРµС‰РµРЅРёР№
   namesENG: array[0..522] of string;
   namesRUS: array[0..522] of string;
-// таблица смещений блока с текстом, нумерация ноль начало блока
-  offsetTable: array of Word; // таблица смещений
-  translationTable: array of string; // таблица перевода, оба массива - это один из маленьких блоков
+// С‚Р°Р±Р»РёС†Р° СЃРјРµС‰РµРЅРёР№ Р±Р»РѕРєР° СЃ С‚РµРєСЃС‚РѕРј, РЅСѓРјРµСЂР°С†РёСЏ РЅРѕР»СЊ РЅР°С‡Р°Р»Рѕ Р±Р»РѕРєР°
+  offsetTable: array of Word; // С‚Р°Р±Р»РёС†Р° СЃРјРµС‰РµРЅРёР№
+  translationTable: array of string; // С‚Р°Р±Р»РёС†Р° РїРµСЂРµРІРѕРґР°, РѕР±Р° РјР°СЃСЃРёРІР° - СЌС‚Рѕ РѕРґРёРЅ РёР· РјР°Р»РµРЅСЊРєРёС… Р±Р»РѕРєРѕРІ
   fin: TextFile;
-// походу нужны еще 2 таблицы, смещение больших блоков и размер
+// РїРѕС…РѕРґСѓ РЅСѓР¶РЅС‹ РµС‰Рµ 2 С‚Р°Р±Р»РёС†С‹, СЃРјРµС‰РµРЅРёРµ Р±РѕР»СЊС€РёС… Р±Р»РѕРєРѕРІ Рё СЂР°Р·РјРµСЂ
 
-// байтовый блок с переводом и его новый размер
+// Р±Р°Р№С‚РѕРІС‹Р№ Р±Р»РѕРє СЃ РїРµСЂРµРІРѕРґРѕРј Рё РµРіРѕ РЅРѕРІС‹Р№ СЂР°Р·РјРµСЂ
   TextByteBlock: array of Byte;
   TextBlockSize, NewSize: LongInt;
-  LOBYTE, HIBYTE: Byte; // старший и младший байты в WORD
+  LOBYTE, HIBYTE: Byte; // СЃС‚Р°СЂС€РёР№ Рё РјР»Р°РґС€РёР№ Р±Р°Р№С‚С‹ РІ WORD
   f2: file of Byte;
-// номера блоков где я нашел текст, возможно потом дополню
+// РЅРѕРјРµСЂР° Р±Р»РѕРєРѕРІ РіРґРµ СЏ РЅР°С€РµР» С‚РµРєСЃС‚, РІРѕР·РјРѕР¶РЅРѕ РїРѕС‚РѕРј РґРѕРїРѕР»РЅСЋ
   bufRus: PByteArray;
   DW1: LongWord;
   index: LongWord;
@@ -757,7 +757,7 @@ const TextBlocksNUM: array[0..91] of Integer = (
     1266);
 begin
  MegaStringENG := '';
- // заполняем таблицу английских имен
+ // Р·Р°РїРѕР»РЅСЏРµРј С‚Р°Р±Р»РёС†Сѓ Р°РЅРіР»РёР№СЃРєРёС… РёРјРµРЅ
   k := 0;
   AssignFile(fin, '.\files\ItemNames.txt');
   Reset(fin);
@@ -773,9 +773,9 @@ begin
   end;
   CloseFile(fin);
 
- // заполняем таблицу русских названий предметов
+ // Р·Р°РїРѕР»РЅСЏРµРј С‚Р°Р±Р»РёС†Сѓ СЂСѓСЃСЃРєРёС… РЅР°Р·РІР°РЅРёР№ РїСЂРµРґРјРµС‚РѕРІ
   k := 0;
-  AssignFile(fin, '.\files\Названия_предметов,_имена.txt');
+  AssignFile(fin, '.\files\РќР°Р·РІР°РЅРёСЏ_РїСЂРµРґРјРµС‚РѕРІ,_РёРјРµРЅР°.txt');
   Reset(fin);
   while (not (Eof(fin))) do
   begin
@@ -791,59 +791,59 @@ begin
   end;
   CloseFile(fin);
 
- // смещение по номеру (блока-1) где хранится адрес начала данных
+ // СЃРјРµС‰РµРЅРёРµ РїРѕ РЅРѕРјРµСЂСѓ (Р±Р»РѕРєР°-1) РіРґРµ С…СЂР°РЅРёС‚СЃСЏ Р°РґСЂРµСЃ РЅР°С‡Р°Р»Р° РґР°РЅРЅС‹С…
  //ResBlockStart := getDWORD(BlockStart1 + 21*8, buf);
- // размер блока
+ // СЂР°Р·РјРµСЂ Р±Р»РѕРєР°
  //ResBlockSize := getDWORD(BlockStart1 + 21*8 + 4, buf);
 
- // начинаем обход текста по номерам блоков
- // в каждом блоке идет сперва таблица смещений,
- // потом текст.
- // сейчас i = 0.. 91
+ // РЅР°С‡РёРЅР°РµРј РѕР±С…РѕРґ С‚РµРєСЃС‚Р° РїРѕ РЅРѕРјРµСЂР°Рј Р±Р»РѕРєРѕРІ
+ // РІ РєР°Р¶РґРѕРј Р±Р»РѕРєРµ РёРґРµС‚ СЃРїРµСЂРІР° С‚Р°Р±Р»РёС†Р° СЃРјРµС‰РµРЅРёР№,
+ // РїРѕС‚РѕРј С‚РµРєСЃС‚.
+ // СЃРµР№С‡Р°СЃ i = 0.. 91
  //AssignFile (fout, '.\temp\ItemNames.txt');
  //Rewrite (fout);
   for i := 0 to (Length(TextBlocksNUM) - 1) do
   begin
-   T1 := Now;  // время до начала цикла
-   // смещение начала таблицы смещений
+   T1 := Now;  // РІСЂРµРјСЏ РґРѕ РЅР°С‡Р°Р»Р° С†РёРєР»Р°
+   // СЃРјРµС‰РµРЅРёРµ РЅР°С‡Р°Р»Р° С‚Р°Р±Р»РёС†С‹ СЃРјРµС‰РµРЅРёР№
     BlockStart1 := getDWORD(BufFileSize - 8, buf);
-   // количество блоков
+   // РєРѕР»РёС‡РµСЃС‚РІРѕ Р±Р»РѕРєРѕРІ
     BlockSize1 := getDWORD(BufFileSize - 4, buf);
 
-   // смещение по номеру (блока-1) где хранится адрес начала данных
+   // СЃРјРµС‰РµРЅРёРµ РїРѕ РЅРѕРјРµСЂСѓ (Р±Р»РѕРєР°-1) РіРґРµ С…СЂР°РЅРёС‚СЃСЏ Р°РґСЂРµСЃ РЅР°С‡Р°Р»Р° РґР°РЅРЅС‹С…
     ResBlockStart := getDWORD(BlockStart1 + (TextBlocksNUM[i] - 1) * 8, buf);
-   // размер блока
+   // СЂР°Р·РјРµСЂ Р±Р»РѕРєР°
     ResBlockSize := getDWORD(BlockStart1 + (TextBlocksNUM[i] - 1) * 8 + 4, buf);
 
-   // количество слов в блоке
+   // РєРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕРІ РІ Р±Р»РѕРєРµ
     num := Trunc((Buf[ResBlockStart + 0] + 256 * Buf[ResBlockStart + 1]) / 2);
-   // таблица смещений в блоке
+   // С‚Р°Р±Р»РёС†Р° СЃРјРµС‰РµРЅРёР№ РІ Р±Р»РѕРєРµ
     SetLength(offsetTable, (num - 1));
     SetLength(translationTable, (num - 1));
-   // последнее смещение равно длине всего блока, поэтому -1, так как с нуля, и -1 минус последний блок - это размер
+   // РїРѕСЃР»РµРґРЅРµРµ СЃРјРµС‰РµРЅРёРµ СЂР°РІРЅРѕ РґР»РёРЅРµ РІСЃРµРіРѕ Р±Р»РѕРєР°, РїРѕСЌС‚РѕРјСѓ -1, С‚Р°Рє РєР°Рє СЃ РЅСѓР»СЏ, Рё -1 РјРёРЅСѓСЃ РїРѕСЃР»РµРґРЅРёР№ Р±Р»РѕРє - СЌС‚Рѕ СЂР°Р·РјРµСЂ
     for j := 0 to (num - 2) do
     begin
       ANSIstr1 := '';
       k := 0;
       off1 := buf[ResBlockStart + j * 2] + 256 * buf[ResBlockStart + j * 2 + 1];
-      offsetTable[j] := off1; // записали смещение оригинального блока
+      offsetTable[j] := off1; // Р·Р°РїРёСЃР°Р»Рё СЃРјРµС‰РµРЅРёРµ РѕСЂРёРіРёРЅР°Р»СЊРЅРѕРіРѕ Р±Р»РѕРєР°
 
       while (buf[ResBlockStart + off1 + k] <> 0) do
       begin
         ANSIstr1 := ANSIstr1 + chr(Buf[ResBlockStart + off1 + k]);
         inc(k);
       end;
-      translationTable[j] := ANSIstr1; // пусть будет англ, если есть перевод, подставляем его
-     // вынули из блока слово
-     // слово может быть пустым, состоит из 2х байт, ноль слово и ноль на конце, 00 00
+      translationTable[j] := ANSIstr1; // РїСѓСЃС‚СЊ Р±СѓРґРµС‚ Р°РЅРіР», РµСЃР»Рё РµСЃС‚СЊ РїРµСЂРµРІРѕРґ, РїРѕРґСЃС‚Р°РІР»СЏРµРј РµРіРѕ
+     // РІС‹РЅСѓР»Рё РёР· Р±Р»РѕРєР° СЃР»РѕРІРѕ
+     // СЃР»РѕРІРѕ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј, СЃРѕСЃС‚РѕРёС‚ РёР· 2С… Р±Р°Р№С‚, РЅРѕР»СЊ СЃР»РѕРІРѕ Рё РЅРѕР»СЊ РЅР° РєРѕРЅС†Рµ, 00 00
       if ANSIstr1 = '' then
       begin
-        translationTable[j] := ''; //#0 + #0; записали пустоту
+        translationTable[j] := ''; //#0 + #0; Р·Р°РїРёСЃР°Р»Рё РїСѓСЃС‚РѕС‚Сѓ
         Continue;
       end;
 
-     // пишем слово в лог
-     // ищем это слово в таблице и берем его перевод, составляем блок слов с переводом
+     // РїРёС€РµРј СЃР»РѕРІРѕ РІ Р»РѕРі
+     // РёС‰РµРј СЌС‚Рѕ СЃР»РѕРІРѕ РІ С‚Р°Р±Р»РёС†Рµ Рё Р±РµСЂРµРј РµРіРѕ РїРµСЂРµРІРѕРґ, СЃРѕСЃС‚Р°РІР»СЏРµРј Р±Р»РѕРє СЃР»РѕРІ СЃ РїРµСЂРµРІРѕРґРѕРј
       for i2 := 0 to (Length(namesENG) - 1) do
       begin
         tmpStr1 := namesEng[i2];
@@ -860,39 +860,39 @@ begin
      //writeln (fout, ansistr1);
     end;
 
-   // здесь имеем translationTable[] и offsetTable[]
-   // в translationTable[] могут быть пустые строки - это два байта нуля, 00 00
-   // в offsetTable[] если это пустая строка, то +2, последнего элемента нет в таблице
-   // это длина блока (мини), тип WORD 2 байта.
-   // заголовок смещений, вся длина блока, блока текста с нулем в конце строки.
+   // Р·РґРµСЃСЊ РёРјРµРµРј translationTable[] Рё offsetTable[]
+   // РІ translationTable[] РјРѕРіСѓС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рµ СЃС‚СЂРѕРєРё - СЌС‚Рѕ РґРІР° Р±Р°Р№С‚Р° РЅСѓР»СЏ, 00 00
+   // РІ offsetTable[] РµСЃР»Рё СЌС‚Рѕ РїСѓСЃС‚Р°СЏ СЃС‚СЂРѕРєР°, С‚Рѕ +2, РїРѕСЃР»РµРґРЅРµРіРѕ СЌР»РµРјРµРЅС‚Р° РЅРµС‚ РІ С‚Р°Р±Р»РёС†Рµ
+   // СЌС‚Рѕ РґР»РёРЅР° Р±Р»РѕРєР° (РјРёРЅРё), С‚РёРї WORD 2 Р±Р°Р№С‚Р°.
+   // Р·Р°РіРѕР»РѕРІРѕРє СЃРјРµС‰РµРЅРёР№, РІСЃСЏ РґР»РёРЅР° Р±Р»РѕРєР°, Р±Р»РѕРєР° С‚РµРєСЃС‚Р° СЃ РЅСѓР»РµРј РІ РєРѕРЅС†Рµ СЃС‚СЂРѕРєРё.
 
-   // собираем новый миниблок байт TextByteBlock[] с русским переводом, потом его интегрируем в общий buf файл
-   // в котором еще таблицу смещений править
-   // считаем размер нового TextByteBlock[]
+   // СЃРѕР±РёСЂР°РµРј РЅРѕРІС‹Р№ РјРёРЅРёР±Р»РѕРє Р±Р°Р№С‚ TextByteBlock[] СЃ СЂСѓСЃСЃРєРёРј РїРµСЂРµРІРѕРґРѕРј, РїРѕС‚РѕРј РµРіРѕ РёРЅС‚РµРіСЂРёСЂСѓРµРј РІ РѕР±С‰РёР№ buf С„Р°Р№Р»
+   // РІ РєРѕС‚РѕСЂРѕРј РµС‰Рµ С‚Р°Р±Р»РёС†Сѓ СЃРјРµС‰РµРЅРёР№ РїСЂР°РІРёС‚СЊ
+   // СЃС‡РёС‚Р°РµРј СЂР°Р·РјРµСЂ РЅРѕРІРѕРіРѕ TextByteBlock[]
     TextBlockSize := 0;
-   // +1 байт ноль в конец
+   // +1 Р±Р°Р№С‚ РЅРѕР»СЊ РІ РєРѕРЅРµС†
     for j := 0 to (Length(translationTable) - 1) do
       TextBlockSize := TextBlockSize + Length(translationTable[j]) + 1;
 
-   // сосчитали длины строк, учли пустые строки и нули у всех на конце
-   // теперь добавляем размер заголовка + 2 байта размер в конце таблицы смещений
+   // СЃРѕСЃС‡РёС‚Р°Р»Рё РґР»РёРЅС‹ СЃС‚СЂРѕРє, СѓС‡Р»Рё РїСѓСЃС‚С‹Рµ СЃС‚СЂРѕРєРё Рё РЅСѓР»Рё Сѓ РІСЃРµС… РЅР° РєРѕРЅС†Рµ
+   // С‚РµРїРµСЂСЊ РґРѕР±Р°РІР»СЏРµРј СЂР°Р·РјРµСЂ Р·Р°РіРѕР»РѕРІРєР° + 2 Р±Р°Р№С‚Р° СЂР°Р·РјРµСЂ РІ РєРѕРЅС†Рµ С‚Р°Р±Р»РёС†С‹ СЃРјРµС‰РµРЅРёР№
     TextBlockSize := TextBlockSize + num * 2 + 2;
-   // новый размер блока мини содержится в TextBlockSize, устанавливаем размер
+   // РЅРѕРІС‹Р№ СЂР°Р·РјРµСЂ Р±Р»РѕРєР° РјРёРЅРё СЃРѕРґРµСЂР¶РёС‚СЃСЏ РІ TextBlockSize, СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂР°Р·РјРµСЂ
     SetLength(TextByteBlock, TextBlockSize);
-   // на всякий случай чистим, хотя он инициализируется нулями
+   // РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№ С‡РёСЃС‚РёРј, С…РѕС‚СЏ РѕРЅ РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚СЃСЏ РЅСѓР»СЏРјРё
     for j := 0 to (TextBlockSize - 1) do
       TextByteBlock[j] := 0;
-   // всё готово для сборки блока.
-   // собираем вольтрона, руки и ноги
+   // РІСЃС‘ РіРѕС‚РѕРІРѕ РґР»СЏ СЃР±РѕСЂРєРё Р±Р»РѕРєР°.
+   // СЃРѕР±РёСЂР°РµРј РІРѕР»СЊС‚СЂРѕРЅР°, СЂСѓРєРё Рё РЅРѕРіРё
     i2 := 0;
     for j := 1 to (num - 2) do
     begin
-      i2 := Length(translationTable[j - 1]) + 1; // плюс ноль на конце
-      if translationTable[j - 1] = '' then i2 := 2; // для пустых строк длина 2, 0 + 0 на конце
-     // текущее смещение = предыдущее + длина предыдущего слова с учетом пустых строк
+      i2 := Length(translationTable[j - 1]) + 1; // РїР»СЋСЃ РЅРѕР»СЊ РЅР° РєРѕРЅС†Рµ
+      if translationTable[j - 1] = '' then i2 := 2; // РґР»СЏ РїСѓСЃС‚С‹С… СЃС‚СЂРѕРє РґР»РёРЅР° 2, 0 + 0 РЅР° РєРѕРЅС†Рµ
+     // С‚РµРєСѓС‰РµРµ СЃРјРµС‰РµРЅРёРµ = РїСЂРµРґС‹РґСѓС‰РµРµ + РґР»РёРЅР° РїСЂРµРґС‹РґСѓС‰РµРіРѕ СЃР»РѕРІР° СЃ СѓС‡РµС‚РѕРј РїСѓСЃС‚С‹С… СЃС‚СЂРѕРє
       offsetTable[j] := offsetTable[j - 1] + i2;
     end;
-   // запишем таблицу смещений в байтовый массив textBlock
+   // Р·Р°РїРёС€РµРј С‚Р°Р±Р»РёС†Сѓ СЃРјРµС‰РµРЅРёР№ РІ Р±Р°Р№С‚РѕРІС‹Р№ РјР°СЃСЃРёРІ textBlock
     for j := 0 to (num - 2) do
     begin
       HIBYTE := Trunc(offsetTable[j] / 256);
@@ -901,12 +901,12 @@ begin
       TextByteBlock[j * 2] := LOBYTE;
       TextByteBlock[j * 2 + 1] := HIBYTE;
     end;
-   // записываем 2 байта длина блока
+   // Р·Р°РїРёСЃС‹РІР°РµРј 2 Р±Р°Р№С‚Р° РґР»РёРЅР° Р±Р»РѕРєР°
     HIBYTE := Trunc(TextBlockSize / 256);
     LOBYTE := TextBlockSize - 256 * HIBYTE;
     TextByteBlock[num * 2 - 2] := LOBYTE;
     TextByteBlock[num * 2 - 1] := HIBYTE;
-   // записываем русский перевод
+   // Р·Р°РїРёСЃС‹РІР°РµРј СЂСѓСЃСЃРєРёР№ РїРµСЂРµРІРѕРґ
     for j := 0 to (num - 2) do
       for i2 := 1 to (Length(translationTable[j])) do
       begin
@@ -914,27 +914,27 @@ begin
         TextByteBlock[offsetTable[j] + i2 - 1] := ord(tmpStr1[i2]);
       end;
 
-  // имеем переведенный и собранный байтовый блок TextByteBlock[]
-  // размером TextBlockSize
-  // начало и размер оригинального блока
+  // РёРјРµРµРј РїРµСЂРµРІРµРґРµРЅРЅС‹Р№ Рё СЃРѕР±СЂР°РЅРЅС‹Р№ Р±Р°Р№С‚РѕРІС‹Р№ Р±Р»РѕРє TextByteBlock[]
+  // СЂР°Р·РјРµСЂРѕРј TextBlockSize
+  // РЅР°С‡Р°Р»Рѕ Рё СЂР°Р·РјРµСЂ РѕСЂРёРіРёРЅР°Р»СЊРЅРѕРіРѕ Р±Р»РѕРєР°
   // ResBlockStart, ResBlockSize
   //
-  // оригинальный блок buf[] размерм BufFileSize
+  // РѕСЂРёРіРёРЅР°Р»СЊРЅС‹Р№ Р±Р»РѕРє buf[] СЂР°Р·РјРµСЂРј BufFileSize
 
-  // Разница размеров нового и старого блоков
+  // Р Р°Р·РЅРёС†Р° СЂР°Р·РјРµСЂРѕРІ РЅРѕРІРѕРіРѕ Рё СЃС‚Р°СЂРѕРіРѕ Р±Р»РѕРєРѕРІ
     NewSize := BufFileSize + (TextBlockSize - ResBlockSize);
-    GetMem(bufRus, NewSize); // выделяем память буфферу
-   // копируем начало
+    GetMem(bufRus, NewSize); // РІС‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ Р±СѓС„С„РµСЂСѓ
+   // РєРѕРїРёСЂСѓРµРј РЅР°С‡Р°Р»Рѕ
    move (buf[0], bufRus[0], ResBlockStart);
    // for j := 0 to (ResBlockStart - 1) do
    //   bufRus[j] := Buf[j];
 
-  // копируем новый переведенный блок
+  // РєРѕРїРёСЂСѓРµРј РЅРѕРІС‹Р№ РїРµСЂРµРІРµРґРµРЅРЅС‹Р№ Р±Р»РѕРє
   Move(textbyteblock[0], bufRus[ResBlockStart], TextBlockSize);
   //  for j := 0 to (TextBlockSize - 1) do
   //    bufRus[ResBlockStart + j] := TextByteBlock[j];
 
-  // копируем конец
+  // РєРѕРїРёСЂСѓРµРј РєРѕРЅРµС†
   i2 := ResBlockStart + TextBlockSize;
   Move(buf[ResBlockStart + ResBlockSize], bufRus[ResBlockStart + TextBlockSize], BufFileSize - (ResBlockStart + ResBlockSize) );
 {    for j := (ResBlockStart + ResBlockSize) to (BufFileSize - 1) do
@@ -943,21 +943,21 @@ begin
       inc(i2);
     end;
 }
-  // надо подготовить таблицу смещений и размеров scream.res
+  // РЅР°РґРѕ РїРѕРґРіРѕС‚РѕРІРёС‚СЊ С‚Р°Р±Р»РёС†Сѓ СЃРјРµС‰РµРЅРёР№ Рё СЂР°Р·РјРµСЂРѕРІ scream.res
   //GlobalOffset : array [0..1272] of LongWord;
   //GlobalSizes  : array [0..1272] of LongWord;
-  // смещение по номеру (блока-1) где хранится адрес начала данных
+  // СЃРјРµС‰РµРЅРёРµ РїРѕ РЅРѕРјРµСЂСѓ (Р±Р»РѕРєР°-1) РіРґРµ С…СЂР°РЅРёС‚СЃСЏ Р°РґСЂРµСЃ РЅР°С‡Р°Р»Р° РґР°РЅРЅС‹С…
   //ResBlockStart := getDWORD(BlockStart1 + (TextBlocksNUM[i] - 1)*8, buf);
-  // размер блока
+  // СЂР°Р·РјРµСЂ Р±Р»РѕРєР°
   //ResBlockSize := getDWORD(BlockStart1 + (TextBlocksNUM[i] - 1)*8 + 4, buf);
     GlobalSizes[TextBlocksNUM[i] - 1] := TextBlockSize;
 
-  // поправить смещения в таблице со следующего блока
+  // РїРѕРїСЂР°РІРёС‚СЊ СЃРјРµС‰РµРЅРёСЏ РІ С‚Р°Р±Р»РёС†Рµ СЃРѕ СЃР»РµРґСѓСЋС‰РµРіРѕ Р±Р»РѕРєР°
     for j := TextBlocksNUM[i] to 1272 do
       GlobalOffset[j] := GlobalOffset[j - 1] + GlobalSizes[j - 1];
 
-  // сбрасываем таблицу в буфер
-  // смещение пишем
+  // СЃР±СЂР°СЃС‹РІР°РµРј С‚Р°Р±Р»РёС†Сѓ РІ Р±СѓС„РµСЂ
+  // СЃРјРµС‰РµРЅРёРµ РїРёС€РµРј
     off1 := NewSize - 1273 * 4 * 2 - 4 * 2;
     for j := 0 to 1272 do
     begin
@@ -968,29 +968,29 @@ begin
       WriteDWORD((off1 + j * 8 + 4), DW1, bufRus);
     end;
 
-   // еще правим указатель на таблицу
+   // РµС‰Рµ РїСЂР°РІРёРј СѓРєР°Р·Р°С‚РµР»СЊ РЅР° С‚Р°Р±Р»РёС†Сѓ
     DW1 := off1;
     WriteDWORD((NewSize - 8), DW1, bufRus);
 
-   // патчим мелкий шрифт
-   //Пишем смещение блока
+   // РїР°С‚С‡РёРј РјРµР»РєРёР№ С€СЂРёС„С‚
+   //РџРёС€РµРј СЃРјРµС‰РµРЅРёРµ Р±Р»РѕРєР°
     DW1 := $0DE6;
     WriteDWORD((off1 + 6 * 8), DW1, bufRus);
 
-   // Пишем размер блока
-    DW1 := $1D66; // размер 7526
+   // РџРёС€РµРј СЂР°Р·РјРµСЂ Р±Р»РѕРєР°
+    DW1 := $1D66; // СЂР°Р·РјРµСЂ 7526
     WriteDWORD((off1 + 6 * 8 + 4), DW1, bufRus);
 
-   // переписать bufRus в buf;
+   // РїРµСЂРµРїРёСЃР°С‚СЊ bufRus РІ buf;
     FreeMem(buf);
-   // переносим новый буфер в старый с учетом новой длины
-    GetMem(Buf, NewSize); // выделяем память буферу
-    //buf := bufRus; // переносим
+   // РїРµСЂРµРЅРѕСЃРёРј РЅРѕРІС‹Р№ Р±СѓС„РµСЂ РІ СЃС‚Р°СЂС‹Р№ СЃ СѓС‡РµС‚РѕРј РЅРѕРІРѕР№ РґР»РёРЅС‹
+    GetMem(Buf, NewSize); // РІС‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ Р±СѓС„РµСЂСѓ
+    //buf := bufRus; // РїРµСЂРµРЅРѕСЃРёРј
     Move(bufRus[0], buf[0], NewSize);
 //    for j := 0 to (NewSize - 1) do
 //      buf[j] := bufRus[j];
 
-    // правим размер
+    // РїСЂР°РІРёРј СЂР°Р·РјРµСЂ
     BufFileSize := NewSize;
     FreeMem(bufRus);
 
